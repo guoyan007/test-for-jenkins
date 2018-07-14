@@ -1,0 +1,51 @@
+*** Settings ***
+Library           Selenium2Library
+
+*** Keywords ***
+login
+    [Arguments]    ${url}    ${browser}    ${userName}    ${psw}
+    open browser    ${url}    ${browser}
+    input text    id=input_0    ${userName}
+    input text    id=input_1    ${psw}
+    click button    xpath=//md-content/div/form[1]/md-content/div/button
+    Maximize Browser Window
+    #Page Should Contain    产品实现
+
+页面跳转
+    [Arguments]    ${element}    ${check}    ${now_handle}    ${main_hande}
+    click element    ${element}
+    ${handle_main}    select window    ${now_handle}
+    ${get_title}    get title
+    Should Be Equal    ${get_title}    ${check}
+    #切回console
+    ${hande_main}    select window    ${main_hande}
+
+创建产品--透传
+    [Arguments]    ${name}    ${type}    ${type_xpath}
+    [Documentation]    ${name}:产品名字
+    ...    ${mode}:产品型号
+    ...    ${type}:产品类型(关键字搜索）
+    ...    ${type_xpath}： 搜索的品类选择
+    ...    ${chineName}:中文名字
+    ...    ${englishName}:英文名字
+    ...
+    ...
+    ...
+    sleep    4
+    click element    xpath=/html/body/div[1]/section/div/div[2]/md-list/div[2]/div[2]/a/md-list-item    #点击定制产品
+    sleep    5
+    click element    xpath=/html/body/div/section/md-content/div/div/div/div[2]/div/md-card/md-icon    #点击+
+    sleep    2
+    page should contain    产品信息
+    input text    xpath=/html/body/div/section/md-content/div/div/md-card/form/div[2]/md-input-container[1]/input    ${name}    #产品名称
+    click element    xpath=/html/body/div/section/md-content/div/div/md-card/form/div[2]/category-search/md-input-container/md-select    #产品品类
+    #Wait Until Page Contains Element    id=input_15    1000
+    sleep    5
+    input text    xpath=/html/body/div[3]/md-select-menu/md-content/md-select-header/input    ${type}    #点击品类搜选框，并搜索“灶具
+    sleep    5
+    click element    ${type_xpath}    #810是灶具的id,不同品类id不一样
+    #click element    xpath//*[@id="radio_411"]    #接入模式
+    Execute Javascript    document.documentElement.scrollTop=40000
+    click element    xpath=/html/body/div[1]/section/md-content/div/div/md-card/form/div[7]/button
+    sleep    5
+    Page Should Contain    创建成功

@@ -1,0 +1,43 @@
+*** Settings ***
+Suite Setup       login    https://console.hekr.me    Chrome    18720978558    123456
+Suite Teardown    close browser
+Resource          baselibr.txt
+Library           MyLibrary
+Library           Other.py
+
+*** Test Cases ***
+定制产品
+    ${Name}    Name Random
+    创建产品--透传    ${Name}    灶具    xpath=/html/body/div[3]/md-select-menu/md-content/md-optgroup/md-option/div[1]
+    ${product}    get text    xpath=/html/body/div/section/md-content/div/div/div/div/md-card/md-content/div[1]/span
+    Should Be Equal    ${product}    创建成功！
+    log    产品创建成功，协议编写
+    click element    xpath=/html/body/div/section/md-content/div/div/div/div/md-card/md-content/div[3]/a
+    sleep    5
+    Page Should Contain    标准参数
+
+删除产品
+    sleep    5
+    click element    xpath=/html/body/div[1]/section/div/div[2]/md-list/div[2]/div[2]/a/md-list-item
+    sleep    5
+    Execute Javascript    document.documentElement.scrollTop=40000
+    ${name}    get text    xpath=/html/body/div/section/md-content/div/div/div/div[2]/div/product-cell[19]/md-card/md-card-content/strong
+    log    ${name}
+    click element    xpath=/html/body/div/section/md-content/div/div/div/div[2]/div/product-cell[19]/md-card/md-card-content/img
+    sleep    3
+    click element    xpath=/html/body/div/section/md-content/div/div/div/div/md-card/md-content/div[3]/button/span
+    click element    xpath=/html/body/div[3]/md-dialog/form/md-toolbar/div/button/span
+    sleep    5
+    click element    xpath=/html/body/div[3]/md-dialog/md-dialog-actions/button[2]
+    sleep    5
+    Page Should Not Contain    ${name}
+
+定制产品--标准透传
+    ${Name}    Name Random
+    创建产品--透传    ${Name}    触摸开关    xpath=/html/body/div[3]/md-select-menu/md-content/md-optgroup/md-option/div[1]
+    ${product}    get text    xpath=/html/body/div/section/md-content/div/div/div/div/md-card/md-content/div[1]/span
+    Should Be Equal    ${product}    创建成功！
+    log    产品创建成功，协议编写
+    click element    xpath=/html/body/div/section/md-content/div/div/div/div/md-card/md-content/div[3]/a
+    sleep    5
+    Page Should Contain Textfield    开关1
