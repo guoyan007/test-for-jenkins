@@ -2,12 +2,11 @@
 Suite Setup       login    https://console.hekr.me    Chrome    18720978558    123456
 Suite Teardown    close browser
 Resource          baselibr.txt
-Library           MyLibrary
-Library           Other.py
+Library           myLibrary
 
 *** Test Cases ***
 定制产品
-    ${Name}    Name Random
+    ${Name}    Name Ramdom
     创建产品--透传    ${Name}    灶具    xpath=/html/body/div[3]/md-select-menu/md-content/md-optgroup/md-option/div[1]
     ${product}    get text    xpath=/html/body/div/section/md-content/div/div/div/div/md-card/md-content/div[1]/span
     Should Be Equal    ${product}    创建成功！
@@ -33,11 +32,19 @@ Library           Other.py
     Page Should Not Contain    ${name}
 
 定制产品--标准透传
-    ${Name}    Name Random
+    ${Name}    Name Ramdom
     创建产品--透传    ${Name}    触摸开关    xpath=/html/body/div[3]/md-select-menu/md-content/md-optgroup/md-option/div[1]
     ${product}    get text    xpath=/html/body/div/section/md-content/div/div/div/div/md-card/md-content/div[1]/span
     Should Be Equal    ${product}    创建成功！
     log    产品创建成功，协议编写
     click element    xpath=/html/body/div/section/md-content/div/div/div/div/md-card/md-content/div[3]/a
     sleep    5
-    Page Should Contain Textfield    开关1
+    Page Should Contain    开关1
+    log    全选标准参数
+    click element    xpath=/html/body/div/section/md-content/div/div/div/div/div/md-card/md-content/div[2]/md-checkbox/div[1]
+    click button    xpath = /html/body/div/section/md-content/div/div/div/div/div/md-card/md-content/div[2]/button
+    sleep    5
+    page should Contain    开关3
+    创建参数    测试参数1    testParam    2    %    98    %
+
+创建参数

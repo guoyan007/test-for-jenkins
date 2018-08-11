@@ -28,9 +28,6 @@ login
     ...    ${type_xpath}： 搜索的品类选择
     ...    ${chineName}:中文名字
     ...    ${englishName}:英文名字
-    ...
-    ...
-    ...
     sleep    4
     click element    xpath=/html/body/div[1]/section/div/div[2]/md-list/div[2]/div[2]/a/md-list-item    #点击定制产品
     sleep    5
@@ -49,3 +46,23 @@ login
     click element    xpath=/html/body/div[1]/section/md-content/div/div/md-card/form/div[7]/button
     sleep    5
     Page Should Contain    创建成功
+
+创建参数
+    [Arguments]    ${paramName}    ${flagName}    ${min}    ${minText}    ${max}    ${maxText}
+    click element    xpath = /html/body/div/section/md-content/div/div/div/div/div/div/md-content/md-card[2]/md-toolbar/div/button[1]/i
+    Input Text    xpath=/html/body/div[3]/md-dialog/form/md-dialog-content/div/md-input-container[1]/input    ${paramName}    #参数名称
+    input text    xpath= /html/body/div[3]/md-dialog/form/md-dialog-content/div/md-input-container[2]/input    ${flagName}    #标识符
+    click element    xpath=/html/body/div[3]/md-dialog/form/md-dialog-content/div/md-input-container[5]/md-select
+    sleep    2
+    click element    xpath=/html/body/div[5]/md-select-menu/md-content/md-option[3]    #可上报可下发的类型
+    #Execute Javascript    document.documentElement.scrollTop=100000
+    #Execute Javascript    document.getElementByXpath("/html/body/div[3]/md-dialog/form/md-dialog-content").scrollTop=10000
+    focus    xpath=/html/body/div[3]/md-dialog/form/md-dialog-content/div/md-tabs/md-tabs-content-wrapper/md-tab-content[1]/div/div/md-input-container/md-select
+    click element    xpath=/html/body/div[3]/md-dialog/form/md-dialog-content/div/md-tabs/md-tabs-content-wrapper/md-tab-content[1]/div/div/md-input-container/md-select    #检验方式选择
+    sleep    2
+    click element    xpath=/html/body/div[5]/md-select-menu/md-content/md-option[2]    #范围校验
+    input text    xpath=/html/body/div[3]/md-dialog/form/md-dialog-content/div/md-input-container/md-tabs/md-tab-content-wrapper/md-tab-content[1]/div/div/div[1]/md-inout-container[1]    ${min}    #最小值
+    input text    xpath =/html/body/div[3]/md-dialog/form/md-dialog-content/div/md-input-container/md-tabs/md-tab-content-wrapper/md-tab-content[1]/div/div/div[1]/md-inout-container[2]    ${minText}    #最小值注释
+    input text    xpath = /html/body/div[3]/md-dialog/form/md-dialog-content/div/md-input-container/md-tabs/md-tab-content-wrapper/md-tab-content[1]/div/div/div[2]/md-inout-container[1]    ${max}    #最大值
+    input text    xpath = /html/body/div[3]/md-dialog/form/md-dialog-content/div/md-input-container/md-tabs/md-tab-content-wrapper/md-tab-content[1]/div/div/div[2]/md-inout-container[2]    ${maxText}    #最大值注释
+    click element    xpath= /html/body/div[3]/md-dialog/form/md-dialog-actions/button[2]
