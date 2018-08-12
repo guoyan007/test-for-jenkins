@@ -1,0 +1,782 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Test-Fire",
+		"_postman_id": "c335eabb-278d-4a62-81c6-3474c6b1a23c",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "user",
+			"description": "",
+			"item": [
+				{
+					"name": "登录",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"code is 200\"] = responseCode.code === 200;",
+									"var data = JSON.parse(responseBody);",
+									"postman.setGlobalVariable(\"token\",\"Bearer \" + data[\"access_token\"])"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": {
+							"raw": "https://{{test-uaahost}}/login?username={{username}}&password={{psw}}&pid=01316026796&clientType=WEB",
+							"protocol": "https",
+							"host": [
+								"{{test-uaahost}}"
+							],
+							"path": [
+								"login"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "password",
+									"value": "{{psw}}",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "pid",
+									"value": "01316026796",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "clientType",
+									"value": "WEB",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "",
+								"disabled": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"description": "",
+								"disabled": true
+							}
+						],
+						"body": {},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "修改用户信息",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"response code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://{{test-firehost}}/account/self",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"uid\": \"{{uid}}\",\r\n\t\"displayName\": \"{{displayName}}\",\r\n\t\"companyType\": \"{{companyType}}\",\r\n\t\"companyAddress\": \"{{companyAddress}}\",\r\n\t\"companyContact\": \"{{companyAddress}}\",\r\n\t\"contactPhone\": [\"18712345678\", \"\"],\r\n\t\"contactEmail\": [\"18712345678@qq.com\"]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "验证用户信息修改",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"",
+									"tests[\"content should contain pid \"] = responseBody.has(\"pid\")",
+									"var user = postman.getEnvironmentVariable(\"displayName\");",
+									"",
+									"var cType = postman.getEnvironmentVariable(\"companyType\");",
+									"var cAddress = postman.getEnvironmentVariable(\"companyAddress\");",
+									"var data = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"uid\",data.uid);",
+									"tests[\"pid should be 01316026796\"] = data.pid === \"01316026796\";",
+									"tests[\"user name update ok\"] = data.lastName === user;",
+									"",
+									"tests[\"companyType update ok\"] = data.companyType === cType;",
+									"tests[\"companyAdress update ok\"] = data.companyAddress === cAddress;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://{{test-firehost}}/account/self",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "添加角色",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"response code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://{{test-firehost}}/role",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\":\"{{roleName}}\",\n\t\"permissions\": [\"device_distribution\",\"real_time_alarm\",\"web_device$read\",\"statistics_report\"]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "获取角色列表",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var rName = postman.getEnvironmentVariable(\"roleName\");",
+									"var data = JSON.parse(responseBody);",
+									"tests[\"user role is ok\"] = responseBody.has(rName);",
+									"var len = data.length;",
+									"console.log(\"len is \",len);",
+									"postman.setEnvironmentVariable(\"roleId\",data[(len-1)].id);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://{{test-firehost}}/role",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "获取单个角色",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"response code is 200\"] = responseCode.code === 200;",
+									"var data = JSON.parse(responseBody);",
+									"var id = postman.getEnvironmentVariable(\"roleId\")",
+									"tests[\"responseID is ok\"] = data.id === id;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://{{test-firehost}}/role/{{roleId}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "修改角色",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"response code is 200\"] = responseCode.code === 200;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://{{test-firehost}}/role",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"{{roleName}}\",\n\t\"id\": \"{{roleId}}\",\n\t\"permissions\": [\"device_distribution\",\"real_time_alarm\"]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "删除用户角色",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"response code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://{{test-firehost}}/role/{{roleId}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "添加子账户（账号重复验证）",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"responseCode is 409\"] = responseCode.code === 409;",
+									"var data = JSON.parse(responseBody);",
+									"tests[\"error is UserAlreadyExistException\"] = data.error ===\"UserAlreadyExistException\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://{{test-firehost}}/account/sub",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"accountType\": \"EXTERNAL\",\r\n\t\"displayName\": \"{{displayName}}\",\r\n\t\"password\": \"{{subPsw}}\",\r\n\t\"phoneNumber\": \"{{subAccount}}\",\r\n\t\"projectIds\": [\"5b65ab863e2fb069c78027bd\"],\r\n\t\"companyName\": \"hekr\",\r\n\t\"companyType\": \"GENERAL\",\r\n\t\"companyAddress\": \"网新大厦啊\",\r\n\t\"companyContact\": \"cesi\",\r\n\t\"contactPhone\": [\"13622227222\"],\r\n\t\"contactEmail\": [\"sd@xds.djh\"],\r\n\t\"role\": [\"5b656c643e2fb03e7774f35e\"]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "子账户信息修改",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"response code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://{{test-firehost}}/account/sub",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"accountType\": \"EXTERNAL\",\n\t\"displayName\": \"{{displayName}}\",\n\t\"password\": \"{{subPsw}}\",\n\t\"phoneNumber\": \"{{subAccount}}\",\n\t\"projectIds\": [\"5b654db53e2fb069c78027b9\"],\n\t\"companyName\": \"{{companyName}}\",\n\t\"companyType\": \"{{companyType}}\",\n\t\"companyAddress\": \"{{companyAddress}}\",\n\t\"companyContact\": \"gy\",\n\t\"contactPhone\": [\"18720978550\"],\n\t\"contactEmail\": [\"gy@hekr.me\"],\n\t\"role\": [\"5b654e083e2fb03e7774f35c\"],\n\t\"uid\": \"75899247482\"\n}\n"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "验证子账户修改",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"",
+									"tests[\"content should contain pid \"] = responseBody.has(\"pid\")",
+									"var user = postman.getEnvironmentVariable(\"displayName\");",
+									"var cName = postman.getEnvironmentVariable(\"companyName\");",
+									"var cType = postman.getEnvironmentVariable(\"companyType\");",
+									"var cAddress = postman.getEnvironmentVariable(\"companyAddress\");",
+									"var data = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"uid\",data[\"content\"][0].uid);",
+									"tests[\"pid should be 01316026796\"] = data[\"content\"][0].pid === \"01316026796\";",
+									"tests[\"user name update ok\"] = data[\"content\"][0].lastName === user;",
+									"tests[\"companyName update ok\"] = data[\"content\"][0].companyName === cName;",
+									"console.log(\"companyName\",data[\"content\"][0].companyName);",
+									"console.log(\"cName\",cName);",
+									"tests[\"companyType update ok\"] = data[\"content\"][0].companyType === cType;",
+									"tests[\"companyAdress update ok\"] = data[\"content\"][0].companyAddress === cAddress;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://{{test-firehost}}/account/sub",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "账号名称查询子账户",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"response code is 200\"] = responseCode.code === 200;",
+									"var data = JSON.parse(responseBody);",
+									"var user = postman.getEnvironmentVariable(\"displayName\");",
+									"tests[\"user name query ok\"] = data[\"content\"][0].lastName === user;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": {
+							"raw": "http://{{test-firehost}}/account/sub?size=10&page=1&displayName={{displayName}}&hierarchy=1",
+							"protocol": "http",
+							"host": [
+								"{{test-firehost}}"
+							],
+							"path": [
+								"account",
+								"sub"
+							],
+							"query": [
+								{
+									"key": "size",
+									"value": "10",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "displayName",
+									"value": "{{displayName}}",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "hierarchy",
+									"value": "1",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "锁定账号",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"response code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": {
+							"raw": "http://{{test-firehost}}/account/sub/{{uid}}/lock?lock=true",
+							"protocol": "http",
+							"host": [
+								"{{test-firehost}}"
+							],
+							"path": [
+								"account",
+								"sub",
+								"{{uid}}",
+								"lock"
+							],
+							"query": [
+								{
+									"key": "lock",
+									"value": "true",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "解锁账号",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"response code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": {
+							"raw": "http://{{test-firehost}}/account/sub/{{uid}}/lock?lock=true",
+							"protocol": "http",
+							"host": [
+								"{{test-firehost}}"
+							],
+							"path": [
+								"account",
+								"sub",
+								"{{uid}}",
+								"lock"
+							],
+							"query": [
+								{
+									"key": "lock",
+									"value": "true",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "导出子账户",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"response code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://{{test-firehost}}/account/sub/export",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "设备告警",
+			"description": "",
+			"item": [
+				{
+					"name": "APP获取告警记录列表",
+					"request": {
+						"url": {
+							"raw": "http://{{test-firehost}}/app/warning?type=ALARM&page=1&size=10",
+							"protocol": "http",
+							"host": [
+								"{{test-firehost}}"
+							],
+							"path": [
+								"app",
+								"warning"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "ALARM",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "APP获取故障记录列表",
+					"request": {
+						"url": {
+							"raw": "http://{{test-firehost}}/app/warning?type=FAULT&page=1&size=10",
+							"protocol": "http",
+							"host": [
+								"{{test-firehost}}"
+							],
+							"path": [
+								"app",
+								"warning"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "FAULT",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "app获取告警设备总数",
+					"request": {
+						"url": {
+							"raw": "http://{{test-firehost}}/app/dashboard/warning/count?type=ALARM",
+							"protocol": "http",
+							"host": [
+								"{{test-firehost}}"
+							],
+							"path": [
+								"app",
+								"dashboard",
+								"warning",
+								"count"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "ALARM",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
