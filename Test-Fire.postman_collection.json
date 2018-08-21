@@ -639,6 +639,356 @@
 			]
 		},
 		{
+			"name": "设备",
+			"description": "",
+			"item": [
+				{
+					"name": "设备数量统计--在线",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"response code is 200\"] = responseCode.code === 200;",
+									"// var data = JSON.parse(responseBody)",
+									"// postman.setEnvironmentVariable(\"ONLINE_count\",data[0].value);",
+									"// console.log(\"value\",data[0].value);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": {
+							"raw": "http://{{test-firehost}}/dashboard/device/count?status=ONLINE",
+							"protocol": "http",
+							"host": [
+								"{{test-firehost}}"
+							],
+							"path": [
+								"dashboard",
+								"device",
+								"count"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "ONLINE",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "设备数量统计--离线",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"response code is 200\"] = responseCode.code === 200;",
+									"var data = JSON.parse(responseBody)",
+									"postman.setEnvironmentVariable(\"OFFLINE_count\",data[0].value);",
+									"console.log(\"value\",data[0].value);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": {
+							"raw": "http://{{test-firehost}}/dashboard/device/count?status=OFFLINE",
+							"protocol": "http",
+							"host": [
+								"{{test-firehost}}"
+							],
+							"path": [
+								"dashboard",
+								"device",
+								"count"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "OFFLINE",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "设备数量统计--报警",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"response code is 200\"] = responseCode.code === 200;",
+									"var data = JSON.parse(responseBody)",
+									"postman.setEnvironmentVariable(\"ALARM_count\",data[0].value);",
+									"console.log(\"value\",data[0].value);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": {
+							"raw": "http://{{test-firehost}}/dashboard/device/count?fireDevStatus=ALARM",
+							"protocol": "http",
+							"host": [
+								"{{test-firehost}}"
+							],
+							"path": [
+								"dashboard",
+								"device",
+								"count"
+							],
+							"query": [
+								{
+									"key": "fireDevStatus",
+									"value": "ALARM",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "设备数量统计--故障",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"response code is 200\"] = responseCode.code === 200;",
+									"var data = JSON.parse(responseBody)",
+									"postman.setEnvironmentVariable(\"FAULT_count\",data[0].value);",
+									"console.log(\"value\",data[0].value);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": {
+							"raw": "http://{{test-firehost}}/dashboard/device/count?fireDevStatus=FAULT",
+							"protocol": "http",
+							"host": [
+								"{{test-firehost}}"
+							],
+							"path": [
+								"dashboard",
+								"device",
+								"count"
+							],
+							"query": [
+								{
+									"key": "fireDevStatus",
+									"value": "FAULT",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "设备数量明细",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"response code is 200\"] = responseCode.code === 200;",
+									"//var online =parseInt(postman.getEnvironmentVariable(\"ONLINE_count\")) ;",
+									"var offline =parseInt(postman.getEnvironmentVariable(\"OFFLINE_count\")) ;",
+									"var alarm =parseInt(postman.getEnvironmentVariable(\"ALARM_count\")) ;",
+									"var fault =parseInt(postman.getEnvironmentVariable(\"FAULT_count\")) ;",
+									"var data = JSON.parse(responseBody);",
+									"//tests[\"normal count is correct\"] = data[2].value === online;",
+									"tests[\"normal count is correct\"] = data[2].value === offline;",
+									"tests[\"alarm count is correct\"] = data[3].value === alarm;",
+									"tests[\"fault count is correct\"] = data[4].value === fault;",
+									"postman.setEnvironmentVariable(\"totalNum\",data[0].value);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://{{test-firehost}}/dashboard/device/all/count",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "返回所有状态的设备数量，在线、离线、故障、告警"
+					},
+					"response": []
+				},
+				{
+					"name": "设备列表",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"response code is 200\"] = responseCode.code === 200;",
+									"var data = JSON.parse(responseBody);",
+									"var tNum = parseInt(postman.getEnvironmentVariable(\"totalNum\"));",
+									"len = data.content.length;",
+									"//console.log(len);",
+									"tests[\"total devices is right\"] = tNum === len;",
+									"var ctrlkey = data.content[len-1][\"ctrlKey\"];",
+									"postman.setEnvironmentVariable(\"devCtrlKey\",ctrlkey);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://{{test-firehost}}/device",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "返回所有状态的设备数量，在线、离线、故障、告警"
+					},
+					"response": []
+				},
+				{
+					"name": "设备控制",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"response code is 200\"] = responseCode.code === 200;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://test-user-openapi.hekr.me/deviceControl",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\t\"deviceList\":[{\n\t\t\"ctrlKey\":\"{{devCtrlKey}}\"\n\t}],\n\t\"data\":{\n\t\t\"raw\":\"484907000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000099\"\n\t}\n}"
+						},
+						"description": "返回所有状态的设备数量，在线、离线、故障、告警"
+					},
+					"response": []
+				},
+				{
+					"name": "设备列表 --告警设备列表",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"response code is 200\"] = responseCode.code === 200;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://{{test-firehost}}/device/warning",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "返回所有状态的设备数量，在线、离线、故障、告警"
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "设备告警",
 			"description": "",
 			"item": [
